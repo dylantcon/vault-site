@@ -8,3 +8,4 @@
 export.log
 .lock
 *.tmp
+/.build/
