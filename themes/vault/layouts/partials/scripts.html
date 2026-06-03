@@ -1,0 +1,10 @@
+{{- if strings.Contains .RawContent "$" -}}
+<script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+{{- end -}}
+{{- if .Store.Get "hasMermaid" -}}
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{darkMode:true,background:'#312a07',mainBkg:'#3d340a',primaryColor:'#3d340a',primaryTextColor:'#8f7e17',primaryBorderColor:'#645810',lineColor:'#8f7e17',secondaryColor:'#645810',tertiaryColor:'#3d340a',fontFamily:'JetBrains Mono, monospace'}});
+</script>
+{{- end -}}

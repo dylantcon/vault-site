@@ -1,0 +1,10 @@
+/public/
+/content/
+/static/
+/export/
+/resources/
+.hugo_build.lock
+/staging/
+export.log
+.lock
+*.tmp

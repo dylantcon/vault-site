@@ -1,0 +1,9 @@
+{{ define "main" }}
+<section class="home">
+  <h1>{{ .Site.Title }}</h1>
+  <p class="tagline">{{ .Site.Params.description }}</p>
+  {{ .Content }}
+  <h2>sections</h2>
+  <ul class="pages">{{ range .Site.Sections.ByTitle }}<li><a href="{{ .RelPermalink }}">{{ .Title | lower }}/</a> <span class="muted">{{ len .Pages }} notes</span></li>{{ end }}</ul>
+</section>
+{{ end }}

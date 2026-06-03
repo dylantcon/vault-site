@@ -1,0 +1,5 @@
+{{- $dest := .Destination -}}
+{{- if and (not (urls.Parse $dest).IsAbs) .Page.File -}}
+  {{- $dest = path.Clean (path.Join "/" .Page.File.Dir $dest) -}}
+{{- end -}}
+<img src="{{ $dest | safeURL }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }} loading="lazy">

@@ -1,0 +1,7 @@
+{{ define "main" }}
+<article class="note">
+  <nav class="crumbs">{{ range .Ancestors.Reverse }}{{ if not .IsHome }}<a href="{{ .RelPermalink }}">{{ .Title | lower }}</a> / {{ end }}{{ end }}</nav>
+  <h1>{{ .Title }}</h1>
+  <div class="note-body">{{ .Content }}</div>
+</article>
+{{ end }}

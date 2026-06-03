@@ -1,0 +1,6 @@
+{{- $dest := .Destination -}}
+{{- $out := $dest -}}
+{{- if not (urls.Parse $dest).IsAbs -}}
+  {{- with .Page.GetPage (strings.TrimSuffix ".md" $dest) -}}{{- $out = .RelPermalink -}}{{- end -}}
+{{- end -}}
+<a href="{{ $out | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>

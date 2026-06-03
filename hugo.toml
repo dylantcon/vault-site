@@ -1,0 +1,17 @@
+baseURL = "https://vault.dconn.dev/"
+languageCode = "en-us"
+title = "dconn.dev // vault"
+theme = "vault"
+enableInlineShortcodes = true
+[markup.goldmark.renderer]
+  unsafe = true
+[markup.highlight]
+  noClasses = false
+  tabWidth = 2
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [['$$', '$$'], ['\[', '\]']]
+    inline = [['$', '$'], ['\(', '\)']]
+[params]
+  description = "Public notes from my Obsidian vault"

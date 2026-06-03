@@ -1,0 +1,9 @@
+{{ define "main" }}
+<section class="listing">
+  <nav class="crumbs">{{ range .Ancestors.Reverse }}{{ if not .IsHome }}<a href="{{ .RelPermalink }}">{{ .Title | lower }}</a> / {{ end }}{{ end }}</nav>
+  <h1>{{ .Title | lower }}/</h1>
+  {{ .Content }}
+  {{ with .Sections }}<h2>sections</h2><ul class="pages">{{ range .ByTitle }}<li><a href="{{ .RelPermalink }}">{{ .Title | lower }}/</a> <span class="muted">{{ len .Pages }}</span></li>{{ end }}</ul>{{ end }}
+  {{ with .RegularPages }}<h2>notes</h2><ul class="pages">{{ range .ByTitle }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}</ul>{{ end }}
+</section>
+{{ end }}
