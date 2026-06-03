@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Normalize notes for obsidian-export's strict parser. STAGING copy only; atomic writes.
-Also handles Excalidraw: standalone *.excalidraw.md -> a page embedding its exported .svg
-(dropped if no .svg yet); embedded ![[X.excalidraw]] -> ![[X.svg]]."""
+Excalidraw: standalone *.excalidraw.md -> a page embedding its .svg (dropped if no .svg);
+embedded ![[X.excalidraw]] -> ![[X.svg]]. Body '---' horizontal rules become '***' ONLY
+outside code fences (so Mermaid/code blocks that use '---' are preserved)."""
 import os, sys, re, tempfile
 root = os.path.abspath(sys.argv[1])
 assert "staging" in root, f"refusing to run outside a staging dir: {root}"
@@ -24,27 +25,38 @@ def write(p, dp, new):
     fd, tmp = tempfile.mkstemp(dir=dp, suffix=".tmp")
     with os.fdopen(fd, "w", encoding="utf-8") as fh: fh.write(new)
     os.replace(tmp, p)
-EXCAL = re.compile(r'(!\[\[[^\]\n|]*?)\.excalidraw(?:\.md)?(\s*[|\]])')  # embedded drawing -> .svg
+def hr_outside_fences(body):
+    """'---' on its own line -> '***', but NEVER inside a ```/~~~ code fence (preserves Mermaid)."""
+    out = []; fence = None
+    for ln in body.split('\n'):
+        if fence is None:
+            m = re.match(r'^\s*(`{3,}|~{3,})', ln)
+            if m: fence = m.group(1); out.append(ln); continue
+            out.append('***' if re.match(r'^---[ \t]*$', ln) else ln)
+        else:
+            c = re.match(r'^\s*(`{3,}|~{3,})\s*$', ln)
+            if c and c.group(1)[0] == fence[0] and len(c.group(1)) >= len(fence): fence = None
+            out.append(ln)
+    return '\n'.join(out)
+EXCAL = re.compile(r'(!\[\[[^\]\n|]*?)\.excalidraw(?:\.md)?(\s*[|\]])')
 
 norm = excl = draw = dropped = 0
 for dp, _, files in os.walk(root):
     for f in files:
         if not f.endswith(".md"): continue
         p = os.path.join(dp, f)
-        # ---- standalone Excalidraw drawing files ----
         if f.endswith(".excalidraw.md"):
             base = f[:-len(".excalidraw.md")]
             if os.path.exists(os.path.join(dp, base + ".svg")):
                 t = clean_title(base).replace('\\', '\\\\').replace('"', '\\"')
                 outp = os.path.join(dp, base + ".md")
-                if os.path.exists(outp): outp = p          # avoid clobbering a real note
+                if os.path.exists(outp): outp = p
                 write(outp, dp, f'---\ntitle: "{t}"\n---\n\n![[{base}.svg]]\n')
                 if outp != p: os.remove(p)
                 draw += 1
             else:
-                os.remove(p); dropped += 1                  # not exported yet -> don't publish raw blob
+                os.remove(p); dropped += 1
             continue
-        # ---- normal notes ----
         text = open(p, encoding="utf-8", errors="replace").read()
         fm, body = strip_fm(text)
         if is_private(fm, body): os.remove(p); excl += 1; continue
@@ -54,7 +66,7 @@ for dp, _, files in os.walk(root):
         h1 = re.match(r'#\s+(.+?)\s*\n', body)
         if h1: title = fm_title or clean_title(h1.group(1)); body = body[h1.end():].lstrip("\n")
         else: title = fm_title or clean_title(f.rsplit(".", 1)[0].replace("-", " ").replace("_", " "))
-        body = re.sub(r'(?m)^---[ \t]*$', '***', body)
+        body = hr_outside_fences(body)
         body = EXCAL.sub(r'\1.svg\2', body)
         title = (title or "Untitled").replace('\\', '\\\\').replace('"', '\\"')
         write(p, dp, f'---\ntitle: "{title}"\n---\n\n' + body); norm += 1
