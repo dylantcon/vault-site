@@ -1,5 +1,15 @@
 {{- $dest := .Destination -}}
-{{- if and (not (urls.Parse $dest).IsAbs) .Page.File -}}
-  {{- $dest = path.Clean (path.Join "/" .Page.File.Dir $dest) -}}
+{{- /* Note transclusion: if the destination resolves to a page, inline its rendered
+       content (lets a table nest inside a table cell as real HTML). Else treat as image. */ -}}
+{{- $page := false -}}
+{{- if and .Page.File (not (urls.Parse $dest).IsAbs) (not (strings.HasPrefix $dest "data:")) -}}
+  {{- with .Page.GetPage $dest -}}{{- $page = . -}}{{- end -}}
 {{- end -}}
+{{- if $page -}}
+<div class="transclusion">{{ $page.Content }}</div>
+{{- else -}}
+  {{- if and (not (urls.Parse $dest).IsAbs) .Page.File -}}
+    {{- $dest = path.Clean (path.Join "/" .Page.File.Dir $dest) -}}
+  {{- end -}}
 <img src="{{ $dest | safeURL }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }} loading="lazy">
+{{- end -}}

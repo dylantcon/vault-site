@@ -65,3 +65,9 @@ mjx-container[display="true"]{margin:1rem 0}
 .brand a:hover{color:var(--accent-hi)}
 .brand .sep{color:var(--muted);margin:0 .2rem}
 .brand .here{color:var(--accent-hi)}
+
+/* transcluded notes (![alt](note) embeds) — incl. tables nested inside table cells */
+.transclusion{margin:.3rem 0}
+.transclusion>:first-child{margin-top:0}
+.transclusion>:last-child{margin-bottom:0}
+td>.transclusion table{font-size:.9em}
