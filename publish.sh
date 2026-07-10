@@ -2,7 +2,11 @@
 # Build vault.dconn.dev. Boundary = ~/Obsidian/.export-ignore (folders) + frontmatter/inline #private.
 # Lives at the webroot; Hugo output is served from ./public (nginx root).
 set -euo pipefail
-SITE="/var/www/vault.dconn.dev"; VAULT="/home/dev/Obsidian"
+SITE="/var/www/vault.dconn.dev"
+# Vault root: single shared value with vault-api — sourced from the same env file so the API
+# and this publish pipeline can never drift; falls back to the literal if the file is absent.
+if [ -f "$HOME/.config/vault-api/env" ]; then . "$HOME/.config/vault-api/env"; fi
+VAULT="${VAULT_ROOT:-/home/dev/Obsidian}"
 STAGING="$SITE/staging"; EXPORT="$SITE/export"; OE="$HOME/.cargo/bin/obsidian-export"; HUGO="/usr/local/bin/hugo"
 SKIPLIST="$SITE/skip-notes.txt"
 cd "$SITE"

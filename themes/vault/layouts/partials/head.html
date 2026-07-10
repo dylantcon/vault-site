@@ -3,5 +3,7 @@
 <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
 <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
-<link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
-<link rel="stylesheet" href="{{ "css/chroma.css" | relURL }}">
+{{ $style := resources.Get "css/style.css" | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+{{ $chroma := resources.Get "css/chroma.css" | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $chroma.RelPermalink }}">

@@ -1,7 +1,7 @@
 @font-face{font-family:'JetBrains Mono';src:url('../fonts/jetbrains-mono-400.woff2') format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'JetBrains Mono';src:url('../fonts/jetbrains-mono-700.woff2') format('woff2');font-weight:700;font-display:swap}
 :root{
-  --bg:#312a07; --bg-alt:#3d340a; --text:#8f7e17; --accent-hi:#f5f5da; --muted:#645810;
+  --bg:#1a1504; --bg-alt:#221b06; --text:#8f7e17; --accent-hi:#f5f5da; --muted:#645810;
   --maxw:48rem; --mono:'JetBrains Mono','Roboto Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box}
